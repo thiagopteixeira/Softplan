@@ -1,0 +1,1 @@
+$("[id='divAlerta']").hide();
