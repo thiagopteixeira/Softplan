@@ -11,14 +11,20 @@ ORDER BY A.CDUSUARIO;
 
 /*Consulta no banco de dados para trazer a relação dos usuários ativos associados, vinculados as unidades/setores
 da Secretária Municipal da Assistência Social de Ribeirão Preto*/
-SELECT A.CDUSUARIO, U.NMUSUARIO, B.SGORGAOSETOR, A.FLSETORDEFAULT
+SELECT A.CDUSUARIO AS Usuário, 
+       INITCAP(U.NMUSUARIO) AS Nome_do_Usuário, 
+       B.SGORGAOSETOR AS Sigla_da_Unidade_Setor, 
+       CASE WHEN A.FLSETORDEFAULT = 'S' THEN 'Sim'
+            WHEN A.FLSETORDEFAULT = 'N' THEN 'Não'
+            ELSE A.FLSETORDEFAULT 
+       END AS Unidade_Setor_Padrão
 FROM SOLAR.ESEGUSRSETORSIST A
 JOIN SOLAR.ECPAORGAOSETOR B ON A.CDORGAOSETOR = B.CDORGAOSETOR
 JOIN SOLAR.ESEGUSUARIO U ON A.CDUSUARIO = U.CDUSUARIO
 WHERE A.CDSISTEMA = 64
 AND (B.SGORGAOSETOR LIKE '%SEMAS%' OR B.SGORGAOSETOR LIKE '%FRASSOL%' OR B.SGORGAOSETOR LIKE '%PAEFI%' OR B.SGORGAOSETOR LIKE '%MJM%')
 AND B.FLSETORATIVO = 'S'
-ORDER BY A.CDUSUARIO;
+ORDER BY U.NMUSUARIO;
 
 /*Consulta no banco de dados para trazer a relação das unidades/setores do usuário informado*/
 SELECT
@@ -92,7 +98,7 @@ WHERE
     AND U.FLHABILITADO = 'S'
     AND B.CDORGAOSETOR = 18
     AND B.CDORGAO = 1 -- PMRP
-    
+
 --Busca o total de usuários ativos (sem duplicidade) em setores ativos, separando o total de usuários do portal interno e portal externo ("PORTAL" (PORTAL)), buscando por orgao e somando o total de usuários do portal internon + portal externo--
 SELECT 
     COUNT(DISTINCT CASE WHEN B.CDORGAOSETOR != 18 THEN A.CDUSUARIO END) AS TOTAL_DE_USUARIOS_ATIVOS_DO_PORTAL_INTERNO,
@@ -108,3 +114,21 @@ WHERE
     AND B.FLSETORATIVO = 'S'
     AND U.FLHABILITADO = 'S'
     AND B.CDORGAO = 1 -- PMRP
+
+
+/*Consulta no banco de dados para trazer a relação das unidades/setores e suas unidades/setores pai de um órgão*/
+SELECT 
+    ESPAI.SGORGAOSETOR AS SGORGAOSETOR_PAI, 
+    ESPAI.NMORGAOSETOR AS NMORGAOSETOR_PAI,
+    ES.SGORGAOSETOR, 
+    ES.NMORGAOSETOR
+FROM 
+    ECPAORGAOSETOR ES
+LEFT JOIN 
+    ECPAORGAOSETOR ESPAI ON ES.CDSETORPAI = ESPAI.CDORGAOSETOR
+WHERE 
+    ES.CDORGAO = (SELECT CDORGAOSETOR FROM ECPAORGAOSETOR WHERE SGORGAOSETOR = 'PMRP')-- orgao
+    AND ES.FLSETORATIVO = 'S'
+   -- AND ES.SGORGAOSETOR = 'ADM-PCCS ANALISADOS'
+ORDER BY 
+    ESPAI.SGORGAOSETOR;
