@@ -67,6 +67,39 @@ ORDER BY U.NMUSUARIO,
 SELECT CDUSUARIO, NMUSUARIO, DTATIVACAO, TPUSUARIO, NUCPFCNPJ, FLHABILITADO, DEEMAIL, DTULTLOGINOK, TPPESSOA
 FROM SOLAR.ESEGUSUARIO WHERE FLHABILITADO = 'S' ORDER BY NMUSUARIO;
 
+--Relatório de Envio Mensal do Renato--
+--Busca o total de usuários ativos (sem duplicidade) em setores ativos, desconsiderando o portal externo ("PORTAL" (PORTAL)), buscando por orgao e somando o total de usuários do portal interno--
+
+--select para garantir que não está trazendo o mesmo usuário mais de uma vez
+SELECT DISTINCT
+    A.CDUSUARIO AS USUARIO,
+    U.NMUSUARIO AS NOME_DO_USUARIO
+FROM 
+    SOLAR.ESEGUSRSETORSIST A
+    INNER JOIN SOLAR.ECPAORGAOSETOR B ON A.CDORGAOSETOR = B.CDORGAOSETOR
+    INNER JOIN SOLAR.ESEGUSUARIO U ON A.CDUSUARIO = U.CDUSUARIO
+WHERE 
+    A.CDSISTEMA = 64
+    AND B.FLSETORATIVO = 'S'
+    AND U.FLHABILITADO = 'S'
+    AND B.CDORGAOSETOR != 18 -- 18 portal
+    AND B.CDORGAO = 1 -- PMRP
+ORDER BY 
+    A.CDUSUARIO;
+
+-- select para contar a quantidade de usuários , após validar o select de cima 
+SELECT
+    COUNT(DISTINCT A.CDUSUARIO) AS TOTAL_USUARIOS_ATIVOS
+FROM 
+    SOLAR.ESEGUSRSETORSIST A
+    INNER JOIN SOLAR.ECPAORGAOSETOR B ON A.CDORGAOSETOR = B.CDORGAOSETOR
+    INNER JOIN SOLAR.ESEGUSUARIO U ON A.CDUSUARIO = U.CDUSUARIO
+WHERE 
+    A.CDSISTEMA = 64
+    AND B.FLSETORATIVO = 'S'
+    AND U.FLHABILITADO = 'S'
+    AND B.CDORGAOSETOR != 18 -- 18 portal  deixar '=' se quiser pegar os usuários externos, e deixar '!=' se quiser pegar os usuários internos
+    AND B.CDORGAO = 1; -- PMRP 
 
 --Busca todos os usuários ativos em setores ativos, retirando portal e buscando por orgao--
 SELECT 
@@ -84,11 +117,10 @@ WHERE
     A.CDSISTEMA = 64
     AND B.FLSETORATIVO = 'S'
     AND U.FLHABILITADO = 'S'
-    AND B.CDORGAOSETOR != 18
+    AND B.CDORGAOSETOR != 18 -- 18 portal
     AND B.CDORGAO = 1 -- PMRP
 ORDER BY 
     A.CDUSUARIO;
-
 
 --Busca todos os usuários ativos (sem duplicidade) em setores ativos, retirando portal e buscando por orgao--
 SELECT 
@@ -115,10 +147,10 @@ WHERE
     A.CDSISTEMA = 64
     AND B.FLSETORATIVO = 'S'
     AND U.FLHABILITADO = 'S'
-    AND B.CDORGAOSETOR = 18
+    AND B.CDORGAOSETOR = 18 -- 18 portal
     AND B.CDORGAO = 1 -- PMRP
 
---Busca o total de usuários ativos (sem duplicidade) em setores ativos, separando o total de usuários do portal interno e portal externo ("PORTAL" (PORTAL)), buscando por orgao e somando o total de usuários do portal internon + portal externo--
+--Busca o total de usuários ativos (sem duplicidade) em setores ativos, separando o total de usuários do portal interno e portal externo ("PORTAL" (PORTAL)), buscando por orgao e somando o total de usuários do portal interno + portal externo--
 SELECT 
     COUNT(DISTINCT CASE WHEN B.CDORGAOSETOR != 18 THEN A.CDUSUARIO END) AS TOTAL_DE_USUARIOS_ATIVOS_DO_PORTAL_INTERNO,
     COUNT(DISTINCT CASE WHEN B.CDORGAOSETOR = 18 THEN A.CDUSUARIO END) AS TOTAL_DE_USUARIOS_ATIVOS_DO_PORTAL_EXTERNO,
@@ -133,7 +165,6 @@ WHERE
     AND B.FLSETORATIVO = 'S'
     AND U.FLHABILITADO = 'S'
     AND B.CDORGAO = 1 -- PMRP
-
 
 /*Consulta no banco de dados para trazer a relação das unidades/setores e suas unidades/setores pai de um órgão*/
 SELECT 
