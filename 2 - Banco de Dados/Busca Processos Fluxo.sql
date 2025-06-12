@@ -4,12 +4,12 @@ FROM ebpmVinculoInst
 WHERE deIdentificacao NOT IN (
     SELECT DISTINCT BVI.deIdentificacao
     FROM ebpmVinculoInst BVI
-    INNER JOIN ECPASERVPROCESSO SP
+        INNER JOIN ECPASERVPROCESSO SP
         ON BVI.deIdentificacao = SP.NUFORMATADO
-    INNER JOIN ECPATAREFA T
+        INNER JOIN ECPATAREFA T
         ON T.IDEXTERNO = '64__' || TO_CHAR(SP.CDPROCESSO)
     WHERE BVI.tpSituacao = 'R'
-      AND T.TPSITUACAOTAREFA = 'A'
+    AND T.TPSITUACAOTAREFA = 'A'
 )
 AND TPSITUACAO = 'R';
 
@@ -17,11 +17,13 @@ AND TPSITUACAO = 'R';
 SELECT DISTINCT deIdentificacao
 FROM ebpmVinculoInst
 WHERE deIdentificacao NOT IN (
-SELECT DISTINCT BVI.deIdentificacao
-FROM ebpmVinculoInst BVI
-INNER JOIN ECPASERVPROCESSO SP ON BVI.deIdentificacao = SP.NUFORMATADO
-INNER JOIN ECPATAREFA T ON T.IDEXTERNO = '64__' || TO_CHAR(SP.CDPROCESSO) -- Ajuste aqui
-WHERE BVI.tpSituacao = 'R'
-AND T.TPSITUACAOTAREFA = 'A'
+    SELECT DISTINCT BVI.deIdentificacao
+    FROM ebpmVinculoInst BVI
+        INNER JOIN ECPASERVPROCESSO SP
+        ON BVI.deIdentificacao = SP.NUFORMATADO
+        INNER JOIN ECPATAREFA T
+        ON T.IDEXTERNO = '64__' || TO_CHAR(SP.CDPROCESSO) -- Ajuste aqui
+    WHERE BVI.tpSituacao = 'R'
+    AND T.TPSITUACAOTAREFA = 'A'
 )
 AND TPSITUACAO = 'R';
