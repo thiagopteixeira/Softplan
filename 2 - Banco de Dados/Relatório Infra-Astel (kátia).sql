@@ -72,14 +72,14 @@ WITH RankedProcesses AS (
         P.NMPROCESSO IN ('[ASTEL] REQUERIMENTO CÂMARA', '[ASTEL] INDICAÇÃO')
         AND OS.SGORGAOSETOR LIKE '%INFRA%'
         AND (
-            (TU.DTRECEBTO IS NULL AND TU.DTENCAMINHA >= TO_DATE('2025-06-02 00:00:00', 'YYYY-MM-DD HH24:MI:SS'))
-            OR (TU.DTRECEBTO >= TO_DATE('2025-06-02 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+            (TU.DTRECEBTO IS NULL AND TU.DTENCAMINHA >= TO_DATE('2025-06-09 00:00:00', 'YYYY-MM-DD HH24:MI:SS'))
+            OR (TU.DTRECEBTO >= TO_DATE('2025-06-09 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
                 AND (SELECT TU_ANT.DTENCAMINHA
                      FROM ECPATRAMITACAO TU_ANT
                      WHERE TU_ANT.NUPROCESSO = TU.NUPROCESSO
                        AND TU_ANT.NUANO = TU.NUANO
                        AND TU_ANT.NUTRAMITE = TU.NUTRAMITE - 1
-                     FETCH FIRST 1 ROWS ONLY) >= TO_DATE('2025-06-02 00:00:00', 'YYYY-MM-DD HH24:MI:SS'))
+                     FETCH FIRST 1 ROWS ONLY) >= TO_DATE('2025-06-09 00:00:00', 'YYYY-MM-DD HH24:MI:SS'))
         )
 )
 SELECT 
@@ -317,7 +317,7 @@ FROM RankedProcesses
 GROUP BY PROCESSO
 ORDER BY PROCESSO;
 
-/*Relatório de Processo da Astel que passaram pela infra no período 09/06/2025 00:00:00 à 16/06/2025 23:59:59*/
+/*Relatório de Processo da Astel que passaram pela infra no período 09/06/2025 00:00:00 à 16/06/2025 23:59:59 Processos dos fluxos "[ASTEL] REQUERIMENTO CÂMARA" e "[ASTEL] INDICAÇÃO"*/
 WITH RankedProcesses AS (
     SELECT
         N.NUPROCESSOFORMATADO AS PROCESSO,
@@ -424,3 +424,5 @@ SELECT
 FROM RankedProcesses
 GROUP BY PROCESSO
 ORDER BY PROCESSO;
+
+/*Relatório de Processo da Astel que passaram pela infra no período 09/06/2025 00:00:00 à 16/06/2025 23:59:59 Processos dos fluxos "[ASTEL] REQUERIMENTO CÂMARA" e "[ASTEL] INDICAÇÃO". Processos sem fluxo*/
