@@ -317,9 +317,12 @@ FROM RankedProcesses
 GROUP BY PROCESSO
 ORDER BY PROCESSO;
 
-/*Relatório de Processo da Astel que passaram pela infra no período 09/06/2025 00:00:00 à 16/06/2025 23:59:59 Processos dos fluxos "[ASTEL] REQUERIMENTO CÂMARA" e "[ASTEL] INDICAÇÃO"*/
+/*Relatório de Processo da Astel que passaram pela infra. Processos dos fluxos "[ASTEL] REQUERIMENTO CÂMARA"
+e "[ASTEL] INDICAÇÃO". Processos sem fluxo*/
 WITH RankedProcesses AS (
     SELECT
+      P.NMPROCESSO AS NOME_PROCESSO,
+      CL.NMCLASSE AS ASSUNTO,
         N.NUPROCESSOFORMATADO AS PROCESSO,
         TU.DTENCAMINHA,
         TU.DTRECEBTO,
@@ -381,28 +384,32 @@ WITH RankedProcesses AS (
     LEFT JOIN ECPAPROCESSO PR ON PR.CDORGAOSETOR = N.CDORGAOSETOR
         AND PR.NUANO = N.NUANO 
         AND PR.NUPROCESSO = N.NUPROCESSO
-    LEFT JOIN ECPAPROCASSUNTO PA ON PA.CDORGAOSETOR = PR.CDORGAOSETOR
     LEFT JOIN ACT_HI_VARINST AHV ON AHV.PROC_INST_ID_ = VI.ProcInstId
     LEFT JOIN ECPATRAMITACAO TU ON PR.NUANO = TU.NUANO 
         AND PR.NUPROCESSO = TU.NUPROCESSO
         AND TU.CDORGAOSETOR = PR.CDORGAOSETOR
     LEFT JOIN ECPAORGAOSETOR OS ON TU.CDORGAOTRAMI = OS.CDORGAOSETOR
-    WHERE 
-        PA.CDASSUNTO IN (1451, 1452)
-        AND P.NMPROCESSO IN ('[ASTEL] REQUERIMENTO CÂMARA', '[ASTEL] INDICAÇÃO')
-        AND OS.SGORGAOSETOR LIKE '%INFRA%'
+    LEFT JOIN ECPAPROCASSUNTO S ON S.NUANO = N.NUANO AND S.NUPROCESSO = N.NUPROCESSO AND S.CDORGAOSETOR = N.CDORGAOSETOR
+    LEFT JOIN EPCLCLASSE CL ON CL.CDCLASSE  = S.CDASSUNTO
+   WHERE 
+(
+  P.NMPROCESSO IN ('[ASTEL] REQUERIMENTO CÂMARA', '[ASTEL] INDICAÇÃO')
+  OR S.CDASSUNTO = 1451 OR S.CDASSUNTO = 1452
+)	 AND OS.SGORGAOSETOR LIKE '%INFRA%'
         AND (
-            (TU.DTRECEBTO IS NULL AND TU.DTENCAMINHA BETWEEN TO_DATE('2025-06-09 00:00:00', 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE('2025-06-16 23:59:59', 'YYYY-MM-DD HH24:MI:SS'))
-            OR (TU.DTRECEBTO BETWEEN TO_DATE('2025-06-09 00:00:00', 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE('2025-06-16 23:59:59', 'YYYY-MM-DD HH24:MI:SS')
+            (TU.DTRECEBTO IS NULL AND TU.DTENCAMINHA >= TO_DATE('2025-06-09 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) -- Alterar data para primeira segunda-feira passada
+            OR (TU.DTRECEBTO >= TO_DATE('2025-06-09 00:00:00', 'YYYY-MM-DD HH24:MI:SS')-- Alterar data para primeira segunda-feira passada
                 AND (SELECT TU_ANT.DTENCAMINHA
-                    FROM ECPATRAMITACAO TU_ANT
-                    WHERE TU_ANT.NUPROCESSO = TU.NUPROCESSO
-                    AND TU_ANT.NUANO = TU.NUANO
-                    AND TU_ANT.NUTRAMITE = TU.NUTRAMITE - 1
-                    FETCH FIRST 1 ROWS ONLY) BETWEEN TO_DATE('2025-06-09 00:00:00', 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE('2025-06-16 23:59:59', 'YYYY-MM-DD HH24:MI:SS'))
+                     FROM ECPATRAMITACAO TU_ANT
+                     WHERE TU_ANT.NUPROCESSO = TU.NUPROCESSO
+                       AND TU_ANT.NUANO = TU.NUANO
+                       AND TU_ANT.NUTRAMITE = TU.NUTRAMITE - 1
+                     FETCH FIRST 1 ROWS ONLY) >= TO_DATE('2025-06-09 00:00:00', 'YYYY-MM-DD HH24:MI:SS'))-- Alterar data para primeira segunda-feira passada
         )
 )
-SELECT
+SELECT 
+    NOME_PROCESSO,
+    ASSUNTO,
     PROCESSO,
     MAX(DTENCAMINHA_ANTERIOR) AS ENCAMINHADO,
     MAX(LAST_INFRA_RECEBIDO) AS RECEBIDO, -- Data de recebimento apenas do setor INFRA
@@ -422,7 +429,20 @@ SELECT
             ELSE 'DESCONHECIDO'
         END) AS FLSITUACAO
 FROM RankedProcesses
-GROUP BY PROCESSO
-ORDER BY PROCESSO;
-
-/*Relatório de Processo da Astel que passaram pela infra no período 09/06/2025 00:00:00 à 16/06/2025 23:59:59 Processos dos fluxos "[ASTEL] REQUERIMENTO CÂMARA" e "[ASTEL] INDICAÇÃO". Processos sem fluxo*/
+GROUP BY NOME_PROCESSO, ASSUNTO, PROCESSO
+ORDER BY PROCESSO; 
+ 
+/* Foi criado esse script para pegar todos processos dos fluxos '[ASTEL] REQUERIMENTO CÂMARA', '[ASTEL] INDICAÇÃO', e pega tambéms o assuntos aberto de forma manual que não foi por fluxo que passaram na ultima semana em algum setor da Secretaria de Infraestrutura ( geramos ele toda segunda feira, pegando de segunda passada a segunda atual ).
+ 
+NOME_PROCESSO - Nome do assunto/Fluxo
+PROCESO - Processo formatado 
+ENCAMINHAMENTO - Quando esse processo foi encaminhado para um setor da Infraestrutura
+RECEBIDO - Se esse processo foi recebido já na Infraestrutura 
+SETOR - Qual setor da infra passou ( o ultimo no periodo informado ) 
+ANO - Ano do Requerimento ou Indicação da câmara
+REQUERIMENTO - Requerimento da câmara 
+VERADOR - Vereador da câmara 
+ASSUNTO - Ementa da Câmara 
+PRAZO - Prazo que a Astel deu de Resposta para o processo. 
+ULTIMO_SETOR - Setor que está, ou que passou antes de ser arquivado. 
+FLSITUAÇÃO - Situação do processo.
