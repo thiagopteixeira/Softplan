@@ -13,10 +13,10 @@ $(".btn-primary")
 setTimeout(escondeAlerta, 7000);
 
 
-// Alerta é mostrado após 7 segundos, caso deseje que inicie imediatamente remova os trechos
+// Alerta é mostrado após 3 segundos, caso deseje que inicie imediatamente remova os trechos
 //"setTimeout(function () {" 
 // e
-// "}, 7000);"
+// "}, 3000);"
 setTimeout(function () {
     $(".btn-primary")
         .parent()
@@ -30,4 +30,4 @@ setTimeout(function () {
     // Fechar o alerta após 7 segundos depois de aparecer, caso não queria que feche automaticamente retire o código abaixo:
     // "setTimeout(escondeAlerta, 7000);
     setTimeout(escondeAlerta, 7000);
-}, 7000);
+}, 3000);
