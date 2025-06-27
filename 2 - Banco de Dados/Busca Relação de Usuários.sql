@@ -63,6 +63,10 @@ ORDER BY U.NMUSUARIO,
          END, 
          B.SGORGAOSETOR;
 
+--Consulta no banco de dados para trazer a relação dos usuários ativos, associados a um determinado endereço de e-mail--
+SELECT * FROM ESEGUSUARIO e 
+    WHERE e.DEEMAIL = 'thiago.teixeira@softplan.com.br'
+
 --Consulta no banco de dados para trazer a relação dos usuários ativos--
 SELECT CDUSUARIO, NMUSUARIO, DTATIVACAO, TPUSUARIO, NUCPFCNPJ, FLHABILITADO, DEEMAIL, DTULTLOGINOK, TPPESSOA
 FROM SOLAR.ESEGUSUARIO WHERE FLHABILITADO = 'S' ORDER BY NMUSUARIO;
