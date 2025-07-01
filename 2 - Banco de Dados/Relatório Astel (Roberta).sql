@@ -54,6 +54,12 @@ ORDER BY PROCESSO;
 
 --WHERE DATA_CADASTRO BETWEEN TO_DATE('17-03-2025', 'DD-MM-YYYY')  AND TO_DATE('21-03-2025', 'DD-MM-YYYY') irá usar essa linha só se quiser procurar por um determinado periodo InicioxFIM
 
+/*WHERE DATA_CADASTRO IN (
+    TO_DATE('12-06-2025', 'DD-MM-YYYY'), --a DATA de entrada do processo--
+    TO_DATE('16-06-2025', 'DD-MM-YYYY'), --a DATA de entrada do processo-- 
+    TO_DATE('18-06-2025', 'DD-MM-YYYY') --a DATA de entrada do processo--
+) irá usar esse trecho quando quiser procurar processos que deram entrada em mais de uma data*/
+
 
 /*Relatório de Processo da Astel. Processos do fluxo "[ASTEL] REQUERIMENTO CÂMARA". Processos sem fluxo*/
 SELECT 
@@ -114,4 +120,10 @@ WHERE DATA_CADASTRO = TO_DATE('14-03-2025', 'DD-MM-YYYY') -- essa é a DATA de e
 GROUP BY PROCESSO, DATA_CADASTRO, SIGLA_SETOR, PRAZO
 ORDER BY PROCESSO;
 
---WHERE DATA_CADASTRO BETWEEN TO_DATE('17-03-2025', 'DD-MM-YYYY')  AND TO_DATE('21-03-2025', 'DD-MM-YYYY') irá usar essa linha só se quiser procurar por um determinado periodo InicioxFIM
+--WHERE DATA_CADASTRO BETWEEN TO_DATE('17-03-2025', 'DD-MM-YYYY')  AND TO_DATE('21-03-2025', 'DD-MM-YYYY') irá usar essa linha só se quiser procurar por um determinado periodo InicioxFIM--
+
+/*WHERE DATA_CADASTRO IN (
+    TO_DATE('12-06-2025', 'DD-MM-YYYY'), --a DATA de entrada do processo--
+    TO_DATE('16-06-2025', 'DD-MM-YYYY'), --a DATA de entrada do processo-- 
+    TO_DATE('18-06-2025', 'DD-MM-YYYY') --a DATA de entrada do processo--
+) irá usar esse trecho quando quiser procurar processos que deram entrada em mais de uma data*/
