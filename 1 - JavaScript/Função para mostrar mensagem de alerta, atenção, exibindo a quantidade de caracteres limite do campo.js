@@ -58,7 +58,7 @@ function limitarEntrada(id, limite) {
   });
 }
 // Chamada da função para cada campo, com o limite específico
-limitarEntrada("tipo_reclamacao", 12000); // 12.000 caracteres
+limitarEntrada("tipo_reclamacao", 2000); // 2.000 caracteres
 limitarEntrada("local_fato", 200); // 200 caracteres
 limitarEntrada("envolvidos_ocorrencia", 200); // 200 caracteres
 limitarEntrada("informacao", 2000);// 2.000 caracteres
