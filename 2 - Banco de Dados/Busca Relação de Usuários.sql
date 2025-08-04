@@ -170,6 +170,156 @@ WHERE
     AND U.FLHABILITADO = 'S'
     AND B.CDORGAO = 1 -- PMRP
 
+--Busca todos os usuários ativos nos setores indicados e buscando por orgao--
+SELECT 
+    U.CDUSUARIO AS USUARIO,
+    U.NMUSUARIO AS NOME_DO_USUARIO,
+    B.SGORGAOSETOR AS SIGLA_SETOR,
+    B.NMORGAOSETOR AS NOME_SETOR
+FROM 
+    SOLAR.ESEGUSRSETORSIST A
+    INNER JOIN SOLAR.ECPAORGAOSETOR B ON A.CDORGAOSETOR = B.CDORGAOSETOR
+    INNER JOIN SOLAR.ESEGUSUARIO U ON A.CDUSUARIO = U.CDUSUARIO
+WHERE 
+    A.CDSISTEMA = 64
+    AND B.FLSETORATIVO = 'S'
+    AND U.FLHABILITADO = 'S'
+    AND B.CDORGAOSETOR IN (
+    	501, -- 501 FAZ-11
+    	514, -- 514 FAZ-11 CP
+    	502, -- 502 FAZ-11 CIP
+    	508, -- 508 FAZ-13
+    	509, -- 509 FAZ-13 COM
+    	2238, -- 2.238 FAZ-13 DECI
+    	510, -- 510 FAZ-13 NOT
+    	504, -- 504 FAZ-14
+    	2324, -- 2.324 FAZ-14 AVB
+    	2400, -- 2.400 FAZ-14 COM
+    	1941, -- 1.941 FAZ-14 CART
+    	1939, -- 1.939 FAZ-14 NOT
+    	1940, -- 1.940 FAZ-14 VISTAS
+    	505, -- 505 FAZ-16
+    	506, -- 506 FAZ-16 COM
+    	507, -- 507 FAZ-16 NOT
+    	547, -- 547 FAZ-21
+    	550, -- 550 FAZ-21 DIR
+    	537, -- 537 FAZ-22
+    	538, -- 538 FAZ 22 MF
+    	540, -- 540 FAZ-23
+    	541, -- 541 FAZ-23 COM
+    	542, -- 542 FAZ-23 CER
+    	2517, -- 2.517 FAZ-23 ISS
+    	544, -- 544 FAZ-24
+    	2076, -- 2.076 FAZ-24 FISCAL
+    	3252, -- 3.252 FAZ-24 TAXAS
+    	543, -- 543 FAZ-25
+    	3322, -- 3.322 FAZ-25 DEM
+    	3304, -- 3.304 FAZ-25 DEV
+    	2075 -- 2.075 FAZ-25 FISCAL
+    	)
+    AND B.CDORGAO = 1 -- PMRP
+    ORDER BY B.SGORGAOSETOR ASC
+
+--Busca todos os usuários (usuário e nome do usuário) ativos nos setores indicados e buscando por orgao--
+SELECT
+	ESPAI.SGORGAOSETOR AS SIGLA_SETOR_PAI, 
+    ESPAI.NMORGAOSETOR AS NOME_SETOR_PAI,
+    ES.SGORGAOSETOR AS SIGLA_SETOR,
+    ES.NMORGAOSETOR AS NOME_SETOR,
+    U.CDUSUARIO AS USUARIO,
+    U.NMUSUARIO AS NOME_DO_USUARIO
+FROM 
+    SOLAR.ECPAORGAOSETOR ES
+LEFT JOIN 
+    SOLAR.ECPAORGAOSETOR ESPAI ON ES.CDSETORPAI = ESPAI.CDORGAOSETOR
+INNER JOIN 
+    SOLAR.ESEGUSRSETORSIST A ON ES.CDORGAOSETOR = A.CDORGAOSETOR
+INNER JOIN 
+    SOLAR.ESEGUSUARIO U ON A.CDUSUARIO = U.CDUSUARIO
+WHERE 
+    ES.CDORGAO = (SELECT CDORGAOSETOR FROM SOLAR.ECPAORGAOSETOR WHERE SGORGAOSETOR = 'PMRP')
+    AND ES.FLSETORATIVO = 'S'
+    AND A.CDSISTEMA = 64
+    AND U.FLHABILITADO = 'S'
+    AND ES.SGORGAOSETOR IN (
+    	'FAZ-11',
+    	'FAZ-11 CIP',
+    	'FAZ-11 CP',
+    	'FAZ-13',
+    	'FAZ-13 COM',
+    	'FAZ-13 DECI',
+    	'FAZ-13 NOT',
+    	'FAZ-14',
+    	'FAZ-14 AVB',
+    	'FAZ-14 CART',
+    	'FAZ-14 COM',
+    	'FAZ-14 NOT',
+    	'FAZ-14 VISTAS',
+    	'FAZ-16',
+    	'FAZ-16 COM',
+    	'FAZ-16 NOT',
+    	'FAZ-21',
+    	'FAZ-21 DIR',
+    	'FAZ-22',
+    	'FAZ-22 MF',
+    	'FAZ-23',
+    	'FAZ-23 CER',
+    	'FAZ-23 COM',
+    	'FAZ-23 ISS',
+    	'FAZ-24',
+    	'FAZ-24 FISCAL',
+    	'FAZ-24 TAXAS',
+    	'FAZ-25',
+    	'FAZ-25 DEM',
+    	'FAZ-25 DEV',
+    	'FAZ-25 FISCAL'
+    )
+    ORDER BY ES.SGORGAOSETOR ASC, 
+             U.NMUSUARIO ASC;
+
+--Busca as unidades/setores por sistema
+SELECT
+	B.CDORGAOSETOR,
+	B.SGORGAOSETOR 
+FROM SOLAR.ESEGUSRSETORSIST A
+    INNER JOIN SOLAR.ECPAORGAOSETOR B ON A.CDORGAOSETOR = B.CDORGAOSETOR
+    INNER JOIN SOLAR.ESEGUSUARIO U ON A.CDUSUARIO = U.CDUSUARIO
+WHERE 
+    A.CDSISTEMA = 64
+    AND B.SGORGAOSETOR IN (
+    	'FAZ-11',
+    	'FAZ-11 CIP',
+    	'FAZ-11 CP',
+    	'FAZ-13',
+    	'FAZ-13 COM',
+    	'FAZ-13 DECI',
+    	'FAZ-13 NOT',
+    	'FAZ-14',
+    	'FAZ-14 AVB',
+    	'FAZ-14 CART',
+    	'FAZ-14 COM',
+    	'FAZ-14 NOT',
+    	'FAZ-14 VISTAS',
+    	'FAZ-16',
+    	'FAZ-16 COM',
+    	'FAZ-16 NOT',
+    	'FAZ-21',
+    	'FAZ-21 DIR',
+    	'FAZ-22',
+    	'FAZ-22 MF',
+    	'FAZ-23',
+    	'FAZ-23 CER',
+    	'FAZ-23 COM',
+    	'FAZ-23 ISS',
+    	'FAZ-24',
+    	'FAZ-24 FISCAL',
+    	'FAZ-24 TAXAS',
+    	'FAZ-25',
+    	'FAZ-25 DEM',
+    	'FAZ-25 DEV',
+    	'FAZ-25 FISCAL'
+    );
+
 /*Consulta no banco de dados para trazer a relação das unidades/setores e suas unidades/setores pai de um órgão*/
 SELECT 
     ESPAI.SGORGAOSETOR AS SGORGAOSETOR_PAI, 
