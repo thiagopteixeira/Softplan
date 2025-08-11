@@ -397,14 +397,14 @@ WITH RankedProcesses AS (
   OR S.CDASSUNTO = 1451 OR S.CDASSUNTO = 1452
 )	 AND OS.SGORGAOSETOR LIKE '%INFRA%'
         AND (
-            (TU.DTRECEBTO IS NULL AND TU.DTENCAMINHA >= TO_DATE('2025-07-28 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) -- Alterar data para primeira segunda-feira passada
-            OR (TU.DTRECEBTO >= TO_DATE('2025-07-28 00:00:00', 'YYYY-MM-DD HH24:MI:SS')-- Alterar data para primeira segunda-feira passada
+            (TU.DTRECEBTO IS NULL AND TU.DTENCAMINHA >= TO_DATE('2025-08-04 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) -- Alterar data para primeira segunda-feira passada
+            OR (TU.DTRECEBTO >= TO_DATE('2025-08-04 00:00:00', 'YYYY-MM-DD HH24:MI:SS')-- Alterar data para primeira segunda-feira passada
                 AND (SELECT TU_ANT.DTENCAMINHA
                      FROM ECPATRAMITACAO TU_ANT
                      WHERE TU_ANT.NUPROCESSO = TU.NUPROCESSO
                        AND TU_ANT.NUANO = TU.NUANO
                        AND TU_ANT.NUTRAMITE = TU.NUTRAMITE - 1
-                     FETCH FIRST 1 ROWS ONLY) >= TO_DATE('2025-07-28 00:00:00', 'YYYY-MM-DD HH24:MI:SS'))-- Alterar data para primeira segunda-feira passada
+                     FETCH FIRST 1 ROWS ONLY) >= TO_DATE('2025-08-04 00:00:00', 'YYYY-MM-DD HH24:MI:SS'))-- Alterar data para primeira segunda-feira passada
         )
 )
 SELECT 
