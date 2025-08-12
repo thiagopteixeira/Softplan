@@ -1,0 +1,28 @@
+/* Associar, vincular usuários a unidades/setores, através da API "post /usuario/inserir-setor" */
+
+//Parâmetros a serem enviados
+{
+  "campos": [
+    "UNIDADES" //campo de retorno a ser esperado, informar "UNIDADES"
+  ],
+  "setoresUsuarios": [
+    {
+      "cdUsuario": "string", //Usuário que será associado, vinculado ao setor
+      "unidadePadrao": {
+        "sgOrgao": "string", //Aqui é informado o órgão que o setor pertence, como "PMRP", "CODERP", "IPM"...
+        "sgUnidade": "string" //Para não alterar a unidade/setor "Padrão" do usuário, informar sigla de setor inativado. Exemplo: "AABRAGHETTO", "AAUGUSTA", "ACOES COMPL"...
+      },
+      "unidades": [
+        {
+          "sgOrgao": "string", //Informado o órgão que o setor pertence, como "PMRP", "CODERP", "IPM"...
+          "sgUnidade": "string" //Informar a unidade/setor a ser associado, vinculado. Exemplo: "SAERP-POP", "SAERP-SERV", "SAERP-POCOS"...
+        }
+      ]
+    }
+  ]
+}
+
+/* Requisição a ser enviada no software "Postman" */
+{"campos": ["UNIDADES"], "setoresUsuarios": [{"cdUsuario": "69566550634", "unidadePadrao": {"sgOrgao": "PMRP", "sgUnidade": "AABRAGHETTO"}, "unidades": [{"sgOrgao": "PMRP", "sgUnidade": "SAERP-SERVIDORES"}]},
+{ "cdUsuario": "10155599801", "unidadePadrao": {"sgOrgao": "PMRP", "sgUnidade": "AABRAGHETTO"}, "unidades": [{"sgOrgao": "PMRP", "sgUnidade": "SAERP-SERVIDORES"}]},
+{ "cdUsuario": "05433766802", "unidadePadrao": {"sgOrgao": "PMRP", "sgUnidade": "AABRAGHETTO"}, "unidades": [{"sgOrgao": "PMRP", "sgUnidade": "SAERP-SERVIDORES"}]}]}

@@ -14,7 +14,7 @@ url_auth = "https://pmribeirao-services-pro:46281f9f-f1f8-450e-97b9-dee7772cc94b
 user_auth = "JORGE.MAMANI"  # Substitua pelo seu usuário
 
 # Perfis a serem atribuídos
-lista_perfis = ["CPA_VISU_PROC_CADAST", "CPA_DOC_SIGILO"]
+lista_perfis = ["CES_CIDADAO", "CPA_ALTERADOC", "CPA_ALTERA_TRAMI", "CPA_APOIO", "CPA_ARQUIVO", "CPA_CADASTRO_DIGITAL", "CPA_DOC_SIGILO", "CPA_PERMIT_TRAMI_EXT", "CPA_REC_CODBARRA", "CPA_RELATORIOS", "CPA_TRAMITADOR", "CPA_USUARIO", "CPA_VISU_PROC_CADAST", "CPA_VISU_PROC_HIERAR", "ECM_ASSINATURA", "ECM_SCANNER"]
 
 # Classe para serializar objetos numpy
 class NpEncoder(json.JSONEncoder):
